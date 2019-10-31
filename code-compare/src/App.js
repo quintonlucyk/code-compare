@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import withFirebaseAuth from "react-with-firebase-auth";
 import * as firebase from "firebase/app";
+// import * as firebase from 'firebase';
+import 'firebase/firestore';
 import "firebase/auth";
 import firebaseConfig from "./firebaseConfig";
 import "./App.css";
@@ -9,7 +11,13 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { inEmail: "", inPassword: "", upEmail: "", upPassword: "" };
+    this.state = {
+      inEmail: "",
+      inPassword: "",
+      upEmail: "",
+      upPassword: "",
+      uid: ""
+    };
   }
 
   handleChange = event => {
@@ -22,10 +30,10 @@ class App extends Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(this.state.inEmail, this.state.inPassword)
-      .catch(function (error) {
+      .catch((error) => {
         // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        let errorCode = error.code;
+        let errorMessage = error.message;
         // ...
       });
   };
@@ -33,20 +41,28 @@ class App extends Component {
   signUp = event => {
     event.preventDefault();
     alert("Credentials were submitted: " + JSON.stringify(this.state));
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(this.state.upEmail, this.state.upPassword)
-      .catch(function (error) {
-        // Handle Errors here.
+    firebase.auth().createUserWithEmailAndPassword(this.state.upEmail, this.state.upPassword)
+      .catch((error) => {
         var errorCode = error.code;
-        var errorMessage = error.message;
-        // ...
+        console.log(`GOT ERROR: ` + errorCode)
+        if (errorCode == 'auth/weak-password') return // password to weak. Minimal 6 characters
+        if (errorCode == 'auth/email-already-in-use') return // Return a email already in use error
+      })
+      .then(() => {
+        let userUid = firebase.auth().currentUser.uid;
+        // var db = firebase.firestore();
+
+        firebase.firestore().collection('users').doc(userUid).set({
+          email: this.state.upEmail,
+        });
       });
-  };
+  }
 
   render() {
     const { user, signOut } = this.props;
-    console.log(user);
+    // if (user && user.uid) {
+    //   this.handleUserIn(user);
+    // }
 
     return (
       <div className="App">
