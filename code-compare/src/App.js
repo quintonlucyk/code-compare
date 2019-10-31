@@ -26,7 +26,6 @@ class App extends Component {
 
   signIn = event => {
     event.preventDefault();
-    alert("Credentials were submitted: " + JSON.stringify(this.state));
     firebase
       .auth()
       .signInWithEmailAndPassword(this.state.inEmail, this.state.inPassword)
@@ -35,12 +34,15 @@ class App extends Component {
         let errorCode = error.code;
         let errorMessage = error.message;
         // ...
+      })
+      .then(() => {
+        let userUid = firebase.auth().currentUser.uid;
+        this.setState({ uid: userUid });
       });
   };
 
   signUp = event => {
     event.preventDefault();
-    alert("Credentials were submitted: " + JSON.stringify(this.state));
     firebase.auth().createUserWithEmailAndPassword(this.state.upEmail, this.state.upPassword)
       .catch((error) => {
         var errorCode = error.code;
@@ -50,19 +52,15 @@ class App extends Component {
       })
       .then(() => {
         let userUid = firebase.auth().currentUser.uid;
-        // var db = firebase.firestore();
-
         firebase.firestore().collection('users').doc(userUid).set({
           email: this.state.upEmail,
         });
+        this.setState({ uid: userUid });
       });
   }
 
   render() {
     const { user, signOut } = this.props;
-    // if (user && user.uid) {
-    //   this.handleUserIn(user);
-    // }
 
     return (
       <div className="App">
