@@ -1,6 +1,6 @@
-export const handleChange = (field, input) => dispatch => {
+export const handleChange = (payload) => dispatch => {
     dispatch({
         type: 'HANDLE_CHANGE',
-        payload: input
+        payload
     })
 }

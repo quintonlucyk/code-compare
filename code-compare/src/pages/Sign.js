@@ -3,8 +3,8 @@ import { handleChange } from '../actions/handleChange';
 import { connect } from 'react-redux';
 
 class Sign extends Component {
-    onChange = (event) => {
-        this.props.handleChange([event.target.name], event.target.value);
+    handleInput = (event) => {
+        this.props.handleChange(event);
     }
 
     render() {
@@ -21,7 +21,7 @@ class Sign extends Component {
                                 type="text"
                                 name="inEmail"
                                 // value={this.state.email}
-                                onChange={this.handleChange}
+                                onChange={this.handleInput}
                             />
                         </label>
                     </div>
@@ -32,7 +32,7 @@ class Sign extends Component {
                                 type="text"
                                 name="inPassword"
                                 // value={this.state.password}
-                                onChange={this.handleChange}
+                                onChange={this.handleInput}
                             />
                         </label>
                     </div>
@@ -46,7 +46,7 @@ class Sign extends Component {
                                 type="text"
                                 name="upEmail"
                                 // value={this.state.email}
-                                onChange={this.handleChange}
+                                onChange={this.handleInput}
                             />
                         </label>
                     </div>
@@ -57,7 +57,7 @@ class Sign extends Component {
                                 type="text"
                                 name="upPassword"
                                 // value={this.state.password}
-                                onChange={this.handleChange}
+                                onChange={this.handleInput}
                             />
                         </label>
                     </div>
@@ -72,8 +72,9 @@ const mapStateToProps = state => ({
     ...state
 })
 
-const mapDispatchToProps = dispatch => ({
-    handleChange: () => dispatch(handleChange)
-})
-
+const mapDispatchToProps = dispatch => {
+    return {
+        handleChange: (data) => dispatch(handleChange(data))
+    }
+}
 export default connect(mapStateToProps, mapDispatchToProps)(Sign);
