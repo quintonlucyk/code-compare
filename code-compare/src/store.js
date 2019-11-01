@@ -1,5 +1,6 @@
-import { createStore } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import rootReducer from './reducers/rootReducer';
+
 export default function configureStore(initialState = {
     inEmail: "",
     inPassword: "",
@@ -9,6 +10,17 @@ export default function configureStore(initialState = {
 }) {
     return createStore(
         rootReducer,
-        initialState
+        initialState,
+        compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
     );
 }
+
+// import { createStore, compose } from 'redux';
+// import commonReducer from "./reducers/commonReducer";
+
+// let initialState = {};
+
+// export default createStore(commonReducer,
+//     initialState,
+//     compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+// );
